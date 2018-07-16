@@ -236,7 +236,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }*/
             Log.i("getln","inside getLocation");
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1*1000,
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0*1000,
                     1, this); //NETWORK_PROVIDER
         }
         catch(SecurityException e) {
