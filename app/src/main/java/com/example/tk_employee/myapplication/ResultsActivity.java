@@ -35,6 +35,8 @@ public class ResultsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Taksykraft Info Technologies
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 

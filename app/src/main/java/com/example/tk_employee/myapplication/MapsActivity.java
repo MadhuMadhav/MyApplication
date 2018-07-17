@@ -1,6 +1,7 @@
 package com.example.tk_employee.myapplication;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.audiofx.Equalizer;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -56,6 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Boolean isConnectionExist = false;
     MobileInternetConnectionDetector cd;
 
+    private ProgressDialog progressBar;
     static String lat, lang;
     View mapView;
     double latitude, longitude, cLat, cLong;
@@ -65,6 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     SupportMapFragment mapFragment;
     private boolean isFirstMapCall = true;
+    private boolean isFirstTime=true;
 
 
     @Override
@@ -77,10 +82,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         relativeLayout = findViewById(R.id.root);
         tvLocation = findViewById(R.id.tv_search);
 
+        progressBar = new ProgressDialog(this);
+        progressBar.setCancelable(false);
+        progressBar.setMessage("Wait....Fetching Your Location");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        //progressBar.setProgress(0);
+       // progressBar.setMax(100);
+
         cd = new MobileInternetConnectionDetector(getApplicationContext());
         isConnectionExist = cd.checkMobileInternetConn();
 
         if (isConnectionExist) {
+            progressBar.show();
             getLocation();
 
             nxtButton = findViewById(R.id.nxtButton);
@@ -216,6 +229,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void setCurrentLocation() {
 
+        if (isFirstTime)
+        {
+            isFirstTime=false;
+            progressBar.dismiss();
+        }
         LatLng coordinate = new LatLng(latitude,longitude);
         CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 17);
         mMap.animateCamera(yourLocation);
@@ -229,7 +247,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 }
             } else {
-
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 101);
                  mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
